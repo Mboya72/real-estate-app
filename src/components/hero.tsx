@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-import Carousel from "./carousel";
 
 
 const Hero = () => {
@@ -35,7 +34,6 @@ const Hero = () => {
           <div>
           </div>
           <div className="mt-40">
-            <Carousel images={[]}/>
           </div>
     </div>
   );

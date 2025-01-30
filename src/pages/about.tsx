@@ -1,113 +1,79 @@
+'use client';
+
 import Image from 'next/image';
-import { JSX } from 'react';
 
-const About = (): JSX.Element => {
+const teamMembers = [
+  {
+    name: 'Ronald Odhiambo',
+    role: 'Founder',
+    image: '/ronald-odhiambo.jpg',
+  },
+  {
+    name: 'George Adabioro',
+    role: 'Co-Founder & CEO',
+    image: '/george-adabioro.jpg',
+  },
+  {
+    name: 'Essy Maloba',
+    role: 'Sales Executive',
+    image: '/essy-maloba.jpg',
+  },
+  {
+    name: 'Sam Obisanya',
+    role: 'Photographer',
+    image: '/sam-obisanya.jpg',
+  },
+];
+
+export default function AboutUs() {
   return (
-    <div className="bg-[#F5F5DC] min-h-screen py-12 px-6"> {/* Update background to Beige */}
-      {/* Main Container */}
-      <div className="max-w-7xl mx-auto space-y-12">
-        
-        {/* Header Section */}
-        <header className="text-center">
-          <h1 className="text-4xl font-bold text-[#6E4559] mb-4">About Us</h1>
-          <p className="text-xl text-[#000] max-w-3xl mx-auto">
-            Discover our expertise in real estate, specializing in Toronto Stock Exchange (TSX) properties. Our passion for investment, experience, and commitment drives us to provide unparalleled opportunities for both investors and homebuyers.
-          </p>
-        </header>
-        
-        {/* Who We Are Section */}
-        <section className="bg-white p-8 rounded-xl shadow-xl space-y-6">
-          <h2 className="text-2xl font-semibold text-[#6E4559]">Who We Are</h2>
-          <p className="text-lg text-[#000]">
-            TSX Real Estate is a trusted real estate company with a focus on offering high-value investment opportunities through properties listed on the Toronto Stock Exchange (TSX). Our mission is to bridge the gap between the stock market and real estate investing, enabling our clients to diversify their portfolios while securing their future.
-          </p>
-          <p className="text-lg text-[#000]">
-            We are a team of experienced real estate professionals and financial analysts dedicated to helping our clients make informed investment decisions. Our vision is to simplify the real estate process and make top-tier TSX properties accessible to all types of investors.
-          </p>
-        </section>
+    <div className="bg-[#603749] text-white py-16 px-8">
+      <div className="max-w-5xl mx-auto text-center">
+        <h1 className="text-4xl font-bold mb-8">About Us</h1>
+        <Image src="/HUGO BOSS will equip the German record champions 1.svg" width={800} height={400} alt="About Us Banner" className="mx-auto rounded-lg" />
+        <p className="mt-6 text-lg">
+          Welcome to Shelter, your trusted partner in finding your dream property. Whether you&apos;re searching for a cozy home, a luxurious estate, or a profitable investment property, we've got you covered.
+        </p>
+        <p className="mt-4 text-lg">
+          At Shelter, we combine technology, market expertise, and a passion for exceptional service to deliver a seamless real estate experience. Our platform is designed to connect buyers, sellers, and renters with the right opportunities.
+        </p>
+        <button className="mt-6 px-6 py-3 bg-white text-[#603749] font-semibold rounded-lg shadow-md">Contact Us</button>
+      </div>
 
-        {/* Image Section */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative rounded-lg overflow-hidden shadow-xl">
-            <Image
-              src="/images/real-estate-office.jpg"
-              alt="Real Estate Office"
-              width={600}
-              height={400}
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <div className="relative rounded-lg overflow-hidden shadow-xl">
-            <Image
-              src="/images/city-skyline.jpg"
-              alt="Toronto Skyline"
-              width={600}
-              height={400}
-              className="object-cover w-full h-full"
-            />
-          </div>
-        </section>
+      <div className="mt-16 flex justify-center gap-12 text-center">
+        <div>
+          <h2 className="text-4xl font-bold">20+</h2>
+          <p>Years of Experience</p>
+        </div>
+        <div>
+          <h2 className="text-4xl font-bold">1,000+</h2>
+          <p>Projects Done</p>
+        </div>
+      </div>
 
-        {/* Our Services Section */}
-        <section className="bg-white p-8 rounded-xl shadow-xl space-y-6">
-          <h2 className="text-2xl font-semibold text-[#6E4559]">Our Services</h2>
-          <p className="text-lg text-[#000]">
-            At TSX Real Estate, we offer a variety of services tailored to help you navigate the real estate landscape and make smart investment choices. Whether you’re interested in residential, commercial, or mixed-use properties, we provide you with the insights and resources to grow your portfolio.
-          </p>
-          <ul className="list-disc pl-6 space-y-3 text-lg text-[#000]">
-            <li>Real Estate Investment Consulting</li>
-            <li>TSX-Listed Property Opportunities</li>
-            <li>Real Estate Market Research & Analysis</li>
-            <li>Property Leasing & Management</li>
-            <li>Investment Portfolio Diversification</li>
-          </ul>
-        </section>
+      <div className="mt-16 max-w-5xl mx-auto">
+        <h2 className="text-3xl font-bold text-center">Why Choose Us?</h2>
+        <ul className="mt-6 text-lg space-y-3 list-disc list-inside">
+          <li><strong>Extensive Listings:</strong> Explore a wide range of properties, from residential to commercial, all in one place.</li>
+          <li><strong>Personalized Search:</strong> Our smart filters make it easy to find properties that match your preferences and budget.</li>
+          <li><strong>Local Expertise:</strong> With a team of experienced real estate professionals, we provide insights into market trends and neighborhood details.</li>
+          <li><strong>Trusted Partners:</strong> We work with top agents and agencies to ensure quality service and reliable transactions.</li>
+        </ul>
+      </div>
 
-        {/* Our Mission Section */}
-        <section className="bg-white p-8 rounded-xl shadow-xl space-y-6">
-          <h2 className="text-2xl font-semibold text-[#6E4559]">Our Mission</h2>
-          <p className="text-lg text-[#000]">
-            Our mission is to provide our clients with high-quality, transparent investment opportunities. We are committed to making TSX real estate a powerful addition to your portfolio, offering you access to exclusive properties and a pathway to financial growth.
-          </p>
-          <p className="text-lg text-[#000]">
-            By blending deep financial expertise with a passion for real estate, we deliver comprehensive solutions that empower our clients to achieve their goals and create lasting wealth.
-          </p>
-        </section>
-
-        {/* Contact Us Section */}
-        <section className="text-center">
-          <h2 className="text-2xl font-semibold text-[#6E4559] mb-4">Contact Us</h2>
-          <p className="text-lg text-[#000] mb-4">
-            If you have any questions, would like to discuss investment opportunities, or simply want to learn more, feel free to reach out to us. We&apos;re here to help you make informed real estate decisions and maximize your investment potential.
-          </p>
-          <div className="inline-flex space-x-4">
-            <a
-              href="/contact"
-              className="px-6 py-3 bg-[#6E4559] text-white rounded-lg hover:bg-[#5a3c47] transition"
-            >
-              Contact Us
-            </a>
-            <a
-              href="mailto:info@tsxrealestate.com"
-              className="px-6 py-3 bg-gray-300 text-[#6E4559] rounded-lg hover:bg-gray-200 transition"
-            >
-              Email Us
-            </a>
-          </div>
-        </section>
-
-        {/* Footer Section */}
-        <footer className="bg-[#6E4559] text-white text-center py-6 mt-12">
-          <p className="text-lg">
-            &copy; 2025 TSX Real Estate. All rights reserved.
-          </p>
-          <p className="text-sm">
-            Built with care and dedication to bring the best real estate investment opportunities to you.
-          </p>
-        </footer>
+      <div className="mt-16 max-w-5xl mx-auto text-center">
+        <h2 className="text-3xl font-bold">Meet The Brains</h2>
+        <p className="mt-2 text-lg">These people work on making us the best!</p>
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {teamMembers.map((member) => (
+            <div key={member.name} className="text-center">
+              <Image src={member.image} width={150} height={150} alt={member.name} className="mx-auto rounded-full border-4 border-white" />
+              <h3 className="mt-4 text-xl font-semibold">{member.name}</h3>
+              <p className="text-gray-300">{member.role}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-export default About;
+}

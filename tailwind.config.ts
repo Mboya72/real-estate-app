@@ -17,7 +17,7 @@ export default {
       borderGray: '#D1D1D1', // Here’s where we define a valid border color
       border: '#D1D1D1', // Add this as an example for 'border-border'
       background: "var(--background)",
-      foreground: "#ffffff",
+      foreground: "#F9F5F1",
     },
     extend: {
       backdropBlur: {
