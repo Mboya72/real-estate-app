@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import SearchBar from "./optionsbar";
+import { AnimatedTestimonials } from "./ui/animated-testimonials";
 
 const Hero = () => {
   return (
@@ -32,7 +32,7 @@ const Hero = () => {
           </Link>
           </div>
           <div>
-            <SearchBar/>
+            <AnimatedTestimonials/>
           </div>
     </div>
   );

@@ -7,6 +7,15 @@ export default {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+     colors: {
+        primary: '#6E4559', // Muted Mauve/Purple
+        accent: '#4D7075',  // Deep Teal
+        lightPink: '#F1D0D6', // Soft Pink
+        lightBeige: '#F9F5F1', // Soft Beige for background
+        darkText: '#2C2C2C', // Dark Text for headers
+        lightText: '#4A4A4A', // Light Text for paragraphs
+        borderGray: '#D1D1D1', // Border/Shadow Gray
+      },
     extend: {
       backdropBlur: {
         sm: '4px',
