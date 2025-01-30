@@ -25,23 +25,23 @@ const Navbar = () => {
         <div className="flex-1 hidden md:flex justify-center space-x-8">
           <Link href="/" className="relative text-white font-normal text-xl group">
             Home
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </Link>
           <Link href="/about" className="relative text-white font-normal text-xl group">
             About
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </Link>
           <Link href="/rent" className="relative text-white font-normal text-xl group">
             Rent
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </Link>
           <Link href="/buy" className="relative text-white font-normal text-xl group">
             Buy
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </Link>
           <Link href="/contact" className="relative text-white font-normal text-xl group">
             Contact Us
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white group-hover:w-full transition-all duration-300"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
           </Link>
         </div>
 

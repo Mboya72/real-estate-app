@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
-import { AnimatedTestimonials } from "./ui/animated-testimonials";
+import Carousel from "./carousel";
+
 
 const Hero = () => {
   return (
@@ -27,12 +28,14 @@ const Hero = () => {
 </div>
 
       <div className="mt-20">
-      <Link href="/Rent" className="font-medium sm:text-2xl lg:text-3xl md:text-2xl text-white hover:bg-[#6E4559] py-4 px-4 border lg:bg-transparent md:bg-[#6E4559] border-white transition duration-300">
+      <Link href="/Rent" className="font-medium sm:text-2xl lg:text-3xl md:text-2xl text-white hover:bg-[#6E4559] py-4 px-4 border lg:bg-transparent  border-white transition duration-300">
             Discover More
           </Link>
           </div>
           <div>
-            <AnimatedTestimonials/>
+          </div>
+          <div className="mt-40">
+            <Carousel images={[]}/>
           </div>
     </div>
   );
