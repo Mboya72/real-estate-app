@@ -4,7 +4,8 @@ from flask_bcrypt import Bcrypt
 db = SQLAlchemy()
 bcrypt = Bcrypt()  # Initialize bcrypt globally
 
-class Property(db.Model):
+class BuyProperty(db.Model):
+    __tablename__ = 'buy_property'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -12,13 +13,12 @@ class Property(db.Model):
     bedrooms = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(500), nullable=True)
     image = db.Column(db.String(255), nullable=True)
-    property_type = db.Column(db.String(50), nullable=False)  # 'buy' or 'rent'
-
-    # Relationship with Review (One-to-Many)
-    reviews = db.relationship('Review', backref='property', lazy=True)
-
+    property_type = db.Column(db.String(50), nullable=False)  # 'buy'
+    
+    transactions = db.relationship('Transaction', backref='buy_property', lazy=True)
+    
     def __repr__(self):
-        return f'<Property {self.name}>'
+        return f'<BuyProperty {self.name}>'
 
     def serialize(self):
         return {
@@ -31,6 +31,48 @@ class Property(db.Model):
             'image': self.image,
             'property_type': self.property_type
         }
+
+class RentProperty(db.Model):
+    __tablename__ = 'rent_property'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+    bedrooms = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    image = db.Column(db.String(255), nullable=True)
+    property_type = db.Column(db.String(50), nullable=False)  # 'rent'
+    
+    transactions = db.relationship('Transaction', backref='rent_property', lazy=True)
+
+    def __repr__(self):
+        return f'<RentProperty {self.name}>'
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'location': self.location,
+            'bedrooms': self.bedrooms,
+            'description': self.description,
+            'image': self.image,
+            'property_type': self.property_type
+        }
+
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    transaction_type = db.Column(db.String(50), nullable=False)  # 'buy' or 'rent'
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('buy_property.id'), nullable=True)
+    property_id_rent = db.Column(db.Integer, db.ForeignKey('rent_property.id'), nullable=True)
+
+    user = db.relationship('User', backref='transactions')
+    bought_property = db.relationship('BuyProperty', backref='transactions', foreign_keys=[property_id])
+    rented_property = db.relationship('RentProperty', backref='transactions', foreign_keys=[property_id_rent])
+
+    def __repr__(self):
+        return f'<Transaction {self.transaction_type} for Property {self.bought_property.name if self.transaction_type == "buy" else self.rented_property.name}>'
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -59,27 +101,4 @@ class User(db.Model):
             'username': self.username,
             'email': self.email,
             'is_owner': self.is_owner
-        }
-
-class Review(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    rating = db.Column(db.Integer, nullable=False)  # Rating (e.g., 1 to 5)
-    comment = db.Column(db.String(500), nullable=True)  # Optional comment
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-
-    # Foreign keys for relationship
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
-    def __repr__(self):
-        return f'<Review for Property {self.property_id} by User {self.user_id}>'
-
-    def serialize(self):
-        return {
-            'id': self.id,
-            'rating': self.rating,
-            'comment': self.comment,
-            'created_at': self.created_at,
-            'property_id': self.property_id,
-            'user_id': self.user_id
         }

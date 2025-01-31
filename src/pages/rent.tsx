@@ -1,17 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Rent = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [bedrooms, setBedrooms] = useState('');
-  
-  // Sample properties for rent with location and bedrooms
-  const properties = [
-    { id: 1, name: "Cozy 2-Bedroom Apartment", price: 1200, location: "New York", bedrooms: 2, description: "Located in a prime neighborhood with easy access to shops and parks.", image: "/property1.jpg" },
-    { id: 2, name: "Spacious 3-Bedroom House", price: 2500, location: "Los Angeles", bedrooms: 3, description: "Perfect for families with a large backyard and modern amenities.", image: "/property2.jpg" },
-    { id: 3, name: "Studio Apartment", price: 800, location: "San Francisco", bedrooms: 1, description: "Affordable and compact, ideal for students or young professionals.", image: "/property3.jpg" },
-  ];
+  const [properties, setProperties] = useState<any[]>([]);  // properties data from the backend
+  const [loading, setLoading] = useState(true); // loading state for fetching data
+  const [error, setError] = useState<string | null>(null);  // to store any error during fetch
+
+  // Fetch properties from the backend when the component mounts
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/properties');
+        if (!response.ok) {
+          throw new Error('Failed to fetch properties');
+        }
+        const data = await response.json();
+        setProperties(data);
+      } catch (err) {
+        setError('Failed to load properties. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, []);
 
   // Filter properties based on search criteria
   const filteredProperties = properties.filter(property => {
@@ -22,6 +38,15 @@ const Rent = () => {
 
     return isLocationMatch && isPriceMatch && isBedroomsMatch;
   });
+
+  // Show loading or error message while fetching data
+  if (loading) {
+    return <div>Loading properties...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="bg-[#f7f7f7] p-8 min-h-screen">

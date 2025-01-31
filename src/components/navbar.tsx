@@ -1,17 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const Navbar = () => {
-  // State for the mobile menu toggle
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Toggle the mobile menu
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  // Track if the user is logged in by checking sessionStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Close the mobile menu
+  useEffect(() => {
+    // Check if there's a user in sessionStorage on component mount
+    if (typeof window !== 'undefined' && sessionStorage.getItem("user")) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
+
+  // Handle logout
+  const handleLogout = () => {
+    sessionStorage.removeItem("user");  // Remove the user from sessionStorage
+    setIsLoggedIn(false);  // Update the login state
+  };
 
   return (
     <nav className="p-4">
@@ -21,44 +33,54 @@ const Navbar = () => {
           <Link href="/">Sheltor</Link>
         </div>
 
-        {/* Center - Navigation links for medium and up */}
+        {/* Center - Navigation links */}
         <div className="flex-1 hidden md:flex justify-center space-x-8">
           <Link href="/" className="relative text-white font-normal text-xl group">
             Home
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link href="/about" className="relative text-white font-normal text-xl group">
             About
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link href="/rent" className="relative text-white font-normal text-xl group">
             Rent
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link href="/buy" className="relative text-white font-normal text-xl group">
             Buy
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link href="/contact" className="relative text-white font-normal text-xl group">
             Contact Us
-            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300 ease-in-out"></span>
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
         </div>
 
-        {/* Right side - Login and Signup */}
+        {/* Right side - Login/Logout */}
         <div className="flex space-x-4">
-          <Link href="/login" className="text-white hover:bg-[#6E4559] py-2 px-4 border border-white transition duration-300">
-            Login
-          </Link>
-          <Link href="/signup" className="text-white hover:bg-[#6E4559] py-2 px-4 border border-white transition duration-300">
-            Signup
-          </Link>
+          {!isLoggedIn ? (
+            <>
+              <Link href="/login" className="text-white hover:bg-[#6E4559] py-2 px-4 border border-white transition duration-300">
+                Login
+              </Link>
+              <Link href="/signup" className="text-white hover:bg-[#6E4559] py-2 px-4 border border-white transition duration-300">
+                Signup
+              </Link>
+            </>
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="text-white hover:bg-[#6E4559] py-2 px-4 border border-white transition duration-300"
+            >
+              Logout
+            </button>
+          )}
         </div>
 
         {/* Hamburger Menu (visible on mobile) */}
         <div className="md:hidden flex items-center">
           <button onClick={toggleMenu} className="text-white focus:outline-none">
-            {/* Hamburger icon */}
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="h-6 w-6">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -80,8 +102,14 @@ const Navbar = () => {
           <Link href="/rent" className="text-white hover:text-gray-400" onClick={closeMenu}>Rent</Link>
           <Link href="/buy" className="text-white hover:text-gray-400" onClick={closeMenu}>Buy</Link>
           <Link href="/contact" className="text-white hover:text-gray-400" onClick={closeMenu}>Contact Us</Link>
-          <Link href="/login" className="text-white hover:text-gray-400" onClick={closeMenu}>Login</Link>
-          <Link href="/signup" className="text-white hover:text-gray-400" onClick={closeMenu}>Signup</Link>
+          {!isLoggedIn ? (
+            <>
+              <Link href="/login" className="text-white hover:text-gray-400" onClick={closeMenu}>Login</Link>
+              <Link href="/signup" className="text-white hover:text-gray-400" onClick={closeMenu}>Signup</Link>
+            </>
+          ) : (
+            <button onClick={handleLogout} className="text-white hover:text-gray-400" onClick={closeMenu}>Logout</button>
+          )}
         </div>
       )}
     </nav>
