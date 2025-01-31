@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from models import db, Property, User, Review, BuyProperty, RentProperty, Transaction
+from models import db, Property, User, Review
 from config import Config
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -61,6 +61,8 @@ def login_user():
 
     # Store the user ID in session after successful login
     session["user_id"] = user.id
+    print("Session after login:", session)  # Debugging log
+
     return jsonify({"message": "Logged in successfully!"}), 200
 
 # Endpoint to logout the user (clear session)
@@ -69,82 +71,98 @@ def logout_user():
     session.pop("user_id", None)  # Remove the user ID from session
     return jsonify({"message": "Logged out successfully!"}), 200
 
-# Endpoint to buy a property
-@app.route("/properties/<int:property_id>/buy", methods=["POST"])
-def buy_property(property_id):
+# Endpoint to get all properties
+@app.route("/properties", methods=["GET"])
+def get_properties():
+    properties = Property.query.all()
+    property_list = [property.serialize() for property in properties]
+    return jsonify(property_list)
+
+# Endpoint to add a new property (requires authentication via session)
+@app.route("/properties", methods=["POST"])
+def add_property():
+    # Check if the user is logged in
     if "user_id" not in session:
-        return jsonify({"error": "You must be logged in to buy a property."}), 403
+        return jsonify({"error": "You must be logged in to add a property."}), 403
+
+    data = request.get_json()
+
+    name = data.get("name")
+    price = data.get("price")
+    location = data.get("location")
+    bedrooms = data.get("bedrooms")
+    description = data.get("description")
+    image = data.get("image")
+    property_type = data.get("property_type")
+
+    if not all([name, price, location, bedrooms, property_type]):
+        return jsonify({"error": "All fields are required."}), 400
+
+    new_property = Property(
+        name=name,
+        price=price,
+        location=location,
+        bedrooms=bedrooms,
+        description=description,
+        image=image,
+        property_type=property_type
+    )
+
+    db.session.add(new_property)
+    db.session.commit()
+
+    return jsonify(new_property.serialize()), 201
+
+# Endpoint to get reviews for a specific property
+@app.route("/properties/<int:property_id>/reviews", methods=["GET"])
+def get_reviews_for_property(property_id):
+    reviews = Review.query.filter_by(property_id=property_id).all()
+    review_list = [review.serialize() for review in reviews]
+    return jsonify(review_list)
+
+# Endpoint to add a review for a property (requires authentication via session)
+@app.route("/properties/<int:property_id>/reviews", methods=["POST"])
+def add_review_for_property(property_id):
+    # Check if the user is logged in
+    if "user_id" not in session:
+        return jsonify({"error": "You must be logged in to add a review."}), 403
+
+    data = request.get_json()
+
+    rating = data.get("rating")
+    comment = data.get("comment", "")
+
+    if not rating or not (1 <= rating <= 5):
+        return jsonify({"error": "Rating must be between 1 and 5."}), 400
+
+    user_id = session["user_id"]  # Get the current logged-in user's ID
+
+    new_review = Review(
+        rating=rating,
+        comment=comment,
+        property_id=property_id,
+        user_id=user_id
+    )
+
+    db.session.add(new_review)
+    db.session.commit()
+
+    return jsonify(new_review.serialize()), 201
+
+# Endpoint to get the current user's profile
+@app.route("/profile", methods=["GET"])
+def get_profile():
+    # Check if the user is logged in
+    if "user_id" not in session:
+        return jsonify({"error": "You must be logged in to view your profile."}), 403
 
     user_id = session["user_id"]
     user = User.query.get(user_id)
 
-    property = BuyProperty.query.get(property_id)
+    if not user:
+        return jsonify({"error": "User not found."}), 404
 
-    if not property:
-        return jsonify({"error": "Property not found."}), 404
+    return jsonify(user.serialize())
 
-    # Check if user has already bought the property
-    existing_transaction = Transaction.query.filter_by(user_id=user.id, property_id=property.id, transaction_type="buy").first()
-    if existing_transaction:
-        return jsonify({"message": "You already bought this property."}), 400
-
-    # Create a new transaction for buying the property
-    new_transaction = Transaction(
-        transaction_type="buy",
-        user_id=user.id,
-        property_id=property.id
-    )
-    db.session.add(new_transaction)
-    db.session.commit()
-
-    return jsonify({"message": "Property bought successfully!"}), 200
-
-# Endpoint to rent a property
-@app.route("/properties/<int:property_id>/rent", methods=["POST"])
-def rent_property(property_id):
-    if "user_id" not in session:
-        return jsonify({"error": "You must be logged in to rent a property."}), 403
-
-    user_id = session["user_id"]
-    user = User.query.get(user_id)
-
-    property = RentProperty.query.get(property_id)
-
-    if not property:
-        return jsonify({"error": "Property not found."}), 404
-
-    # Check if user has already rented the property
-    existing_transaction = Transaction.query.filter_by(user_id=user.id, property_id_rent=property.id, transaction_type="rent").first()
-    if existing_transaction:
-        return jsonify({"message": "You already rented this property."}), 400
-
-    # Create a new transaction for renting the property
-    new_transaction = Transaction(
-        transaction_type="rent",
-        user_id=user.id,
-        property_id_rent=property.id
-    )
-    db.session.add(new_transaction)
-    db.session.commit()
-
-    return jsonify({"message": "Property rented successfully!"}), 200
-
-# Helper function to check if the user has bought the property
-def user_has_bought_property(property_id):
-    if "user_id" not in session:
-        return False
-    user_id = session["user_id"]
-    transaction = Transaction.query.filter_by(user_id=user_id, property_id=property_id, transaction_type="buy").first()
-    return transaction is not None
-
-# Helper function to check if the user has rented the property
-def user_has_rented_property(property_id):
-    if "user_id" not in session:
-        return False
-    user_id = session["user_id"]
-    transaction = Transaction.query.filter_by(user_id=user_id, property_id_rent=property_id, transaction_type="rent").first()
-    return transaction is not None
-
-# Main entry point
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,5 +1,5 @@
 from app import app, db
-from models import User, BuyProperty, RentProperty, Review, Transaction
+from models import User, Property, Review
 from flask_bcrypt import Bcrypt
 
 # Initialize bcrypt for password hashing
@@ -16,8 +16,8 @@ users_data = [
 properties_data = [
     {"name": "Luxury 4-Bedroom Villa", "price": 850000, "location": "Miami", "bedrooms": 4, "description": "This modern villa comes with a private pool and breathtaking views.", "image": "https://i.pinimg.com/736x/2f/9e/0c/2f9e0c4aaffa3cecaea412e1e5e8deb1.jpg", "property_type": "buy"},
     {"name": "Charming 3-Bedroom House", "price": 400000, "location": "Austin", "bedrooms": 3, "description": "Perfect for families looking for a cozy yet affordable home.", "image": "https://i.pinimg.com/736x/ad/1e/ef/ad1eef868f03b46f4e6821a12f53d8cb.jpg", "property_type": "buy"},
-    {"name": "Cozy 2-Bedroom Apartment", "price": 1200, "location": "New York", "bedrooms": 2, "description": "Located in a prime neighborhood with easy access to shops and parks.", "image": "https://img.freepik.com/free-photo/3d-rendering-house-model_23-2150799635.jpg", "property_type": "rent"},
-    {"name": "Spacious 3-Bedroom House", "price": 2500, "location": "Los Angeles", "bedrooms": 3, "description": "Perfect for families with a large backyard and modern amenities.", "image": "https://img.freepik.com/free-photo/luxury-architecture-exterior-design_23-2151920974.jpg", "property_type": "rent"}
+   {"name": "Cozy 2-Bedroom Apartment", "price": 1200, "location": "New York", "bedrooms": 2, "description": "Located in a prime neighborhood with easy access to shops and parks.", "image": "https://img.freepik.com/free-photo/3d-rendering-house-model_23-2150799635.jpg", "property_type": "rent"},
+{"name": "Spacious 3-Bedroom House", "price": 2500, "location": "Los Angeles", "bedrooms": 3, "description": "Perfect for families with a large backyard and modern amenities.", "image": "https://img.freepik.com/free-photo/luxury-architecture-exterior-design_23-2151920974.jpg", "property_type": "rent"}
 ]
 
 # Sample data for reviews
@@ -44,28 +44,17 @@ def seed_db():
         # Commit the user data
         db.session.commit()
 
-        # Add properties (buy and rent separately)
+        # Add properties
         for property_data in properties_data:
-            if property_data["property_type"] == "buy":
-                property = BuyProperty(
-                    name=property_data["name"],
-                    price=property_data["price"],
-                    location=property_data["location"],
-                    bedrooms=property_data["bedrooms"],
-                    description=property_data["description"],
-                    image=property_data["image"],
-                    property_type=property_data["property_type"]
-                )
-            else:
-                property = RentProperty(
-                    name=property_data["name"],
-                    price=property_data["price"],
-                    location=property_data["location"],
-                    bedrooms=property_data["bedrooms"],
-                    description=property_data["description"],
-                    image=property_data["image"],
-                    property_type=property_data["property_type"]
-                )
+            property = Property(
+                name=property_data["name"],
+                price=property_data["price"],
+                location=property_data["location"],
+                bedrooms=property_data["bedrooms"],
+                description=property_data["description"],
+                image=property_data["image"],
+                property_type=property_data["property_type"]
+            )
             db.session.add(property)
 
         # Commit the property data
@@ -74,11 +63,7 @@ def seed_db():
         # Add reviews
         for review_data in reviews_data:
             user = User.query.filter_by(email=review_data["user_email"]).first()
-            if property_data["property_type"] == "buy":
-                property = BuyProperty.query.filter_by(name=review_data["property_name"]).first()
-            else:
-                property = RentProperty.query.filter_by(name=review_data["property_name"]).first()
-
+            property = Property.query.filter_by(name=review_data["property_name"]).first()
             if user and property:
                 review = Review(
                     rating=review_data["rating"],
