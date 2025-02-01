@@ -1,10 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
+from extensions import db  # No need to initialize db again here
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+from app import bcrypt
 
-db = SQLAlchemy()
-bcrypt = Bcrypt()  # Initialize bcrypt globally
-
-class Property(db.Model):
+# Buy Property Model
+class BuyProperty(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float, nullable=False)
@@ -12,13 +12,12 @@ class Property(db.Model):
     bedrooms = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(500), nullable=True)
     image = db.Column(db.String(255), nullable=True)
-    property_type = db.Column(db.String(50), nullable=False)  # 'buy' or 'rent'
 
-    # Relationship with Review (One-to-Many)
-    reviews = db.relationship('Review', backref='property', lazy=True)
+    # Relationship with Review (change backref name to 'buy_reviews')
+    reviews = db.relationship('Review', backref='buy_reviews', lazy=True)
 
     def __repr__(self):
-        return f'<Property {self.name}>'
+        return f'<BuyProperty {self.name}>'
 
     def serialize(self):
         return {
@@ -28,29 +27,54 @@ class Property(db.Model):
             'location': self.location,
             'bedrooms': self.bedrooms,
             'description': self.description,
-            'image': self.image,
-            'property_type': self.property_type
+            'image': self.image
         }
 
+# Rent Property Model
+class RentProperty(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    location = db.Column(db.String(255), nullable=False)
+    bedrooms = db.Column(db.Integer, nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    image = db.Column(db.String(255), nullable=True)
+
+    # Relationship with Review (change backref name to 'rent_reviews')
+    reviews = db.relationship('Review', backref='rent_reviews', lazy=True)
+
+    def __repr__(self):
+        return f'<RentProperty {self.name}>'
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'location': self.location,
+            'bedrooms': self.bedrooms,
+            'description': self.description,
+            'image': self.image
+        }
+
+# User Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     is_owner = db.Column(db.Boolean, default=False)  # True if user is an owner
-
-    # Relationship with Review (One-to-Many)
-    reviews = db.relationship('Review', backref='user', lazy=True)
+    reviews = db.relationship('Review', back_populates='user', lazy=True)  # Relationship with Review
 
     def __repr__(self):
         return f'<User {self.username}>'
 
     def set_password(self, password):
-        # Use the global bcrypt instance to generate the password hash
+        # Use bcrypt to hash the password
         self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
-        # Use the global bcrypt instance to check the password hash
+        # Use bcrypt to check the password
         return bcrypt.check_password_hash(self.password_hash, password)
 
     def serialize(self):
@@ -61,25 +85,34 @@ class User(db.Model):
             'is_owner': self.is_owner
         }
 
+# Review Model
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    rating = db.Column(db.Integer, nullable=False)  # Rating (e.g., 1 to 5)
-    comment = db.Column(db.String(500), nullable=True)  # Optional comment
-    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    rating = db.Column(db.Integer, nullable=False)
+    comment = db.Column(db.String(300), nullable=False)
+    
+    # Foreign keys
+    user_id = db.Column(db.Integer, ForeignKey('user.id'), nullable=False)
+    property_id = db.Column(db.Integer, nullable=False)
 
-    # Foreign keys for relationship
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # Relationships for buy and rent properties
+    buy_property_id = db.Column(db.Integer, ForeignKey('buy_property.id'), nullable=True)
+    rent_property_id = db.Column(db.Integer, ForeignKey('rent_property.id'), nullable=True)
+
+    # Relationships
+    user = db.relationship('User', back_populates='reviews')
+    buy_property = db.relationship('BuyProperty', backref='buy_reviews', uselist=False)
+    rent_property = db.relationship('RentProperty', backref='rent_reviews', uselist=False)
 
     def __repr__(self):
-        return f'<Review for Property {self.property_id} by User {self.user_id}>'
+        return f'<Review {self.id} for Property {self.property_id}>'
 
     def serialize(self):
         return {
             'id': self.id,
             'rating': self.rating,
             'comment': self.comment,
-            'created_at': self.created_at,
-            'property_id': self.property_id,
-            'user_id': self.user_id
+            'user_id': self.user_id,
+            'buy_property_id': self.buy_property_id,
+            'rent_property_id': self.rent_property_id,
         }
