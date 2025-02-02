@@ -4,7 +4,7 @@ const Rent = () => {
   const [properties, setProperties] = useState<any[]>([]);
   const [reviews, setReviews] = useState<{ [key: number]: string }>({}); // Store reviews by property id
   const [ratings, setRatings] = useState<{ [key: number]: number }>({}); // Store ratings by property id
-  const [userEmail, setUserEmail] = useState<string>(''); // Assuming user email is stored
+  const [userEmail] = useState<string>(''); // Assuming user email is stored
 
   useEffect(() => {
     fetch('http://localhost:5000/rent-properties')

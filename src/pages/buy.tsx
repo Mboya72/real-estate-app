@@ -8,7 +8,9 @@ const Buy = () => {
     fetch('http://localhost:5000/buy-properties')
       .then((response) => response.json())
       .then((data) => setProperties(data))
-      .catch((err) => setError('Failed to fetch properties.'));
+      .catch(function (err) {
+        return setError('Failed to fetch properties.');
+      });
   }, []);
 
   const deleteProperty = async (id: number) => {

@@ -32,7 +32,7 @@ export default function AboutUs() {
         <h1 className="text-4xl font-bold mb-8">About Us</h1>
         <Image src="/HUGO BOSS will equip the German record champions 1.svg" width={800} height={400} alt="About Us Banner" className="mx-auto rounded-lg" />
         <p className="mt-6 text-lg">
-          Welcome to Shelter, your trusted partner in finding your dream property. Whether you&apos;re searching for a cozy home, a luxurious estate, or a profitable investment property, we've got you covered.
+          Welcome to Shelter, your trusted partner in finding your dream property. Whether you&apos;re searching for a cozy home, a luxurious estate, or a profitable investment property, we&apos;ve got you covered.
         </p>
         <p className="mt-4 text-lg">
           At Shelter, we combine technology, market expertise, and a passion for exceptional service to deliver a seamless real estate experience. Our platform is designed to connect buyers, sellers, and renters with the right opportunities.

@@ -10,19 +10,19 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Check if there's a user in sessionStorage on component mount
     if (typeof window !== 'undefined' && sessionStorage.getItem("user")) {
       setIsLoggedIn(true);
     }
   }, []);
+  
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
   // Handle logout
-  const handleLogout = () => {
-    sessionStorage.removeItem("user");  // Remove the user from sessionStorage
-    setIsLoggedIn(false);  // Update the login state
+  const handleLogoutAndClose = () => {
+    handleLogout();
+    closeMenu();
   };
 
   return (
@@ -116,7 +116,7 @@ const Navbar = () => {
               <Link href="/signup" className="text-white hover:text-gray-400" onClick={closeMenu}>Signup</Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="text-white hover:text-gray-400" onClick={closeMenu}>Logout</button>
+            <button onClick={handleLogoutAndClose} className="text-white hover:text-gray-400">Logout</button>
           )}
         </div>
       )}
@@ -125,3 +125,7 @@ const Navbar = () => {
 };
 
 export default Navbar;
+function handleLogout() {
+  throw new Error('Function not implemented.');
+}
+
