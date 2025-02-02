@@ -1,4 +1,4 @@
-# Property Rental and Purchase Application
+# Real Estate Application (SHELTOR)
 
 A full-stack web application that allows users to post, browse, and manage rental and purchase properties. Users can submit reviews, rate properties, and delete their listings.
 
