@@ -1,37 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Property Rental and Purchase Application
 
-## Getting Started
+A full-stack web application that allows users to post, browse, and manage rental and purchase properties. Users can submit reviews, rate properties, and delete their listings.
 
-First, run the development server:
+## Table of Contents
+
+- [Technologies Used](#technologies-used)
+- [Setup Instructions](#setup-instructions)
+- [Running the Application](#running-the-application)
+- [API Endpoints](#api-endpoints)
+- [File Structure](#file-structure)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Technologies Used
+
+### Frontend
+
+- **React.js** - Frontend framework for building user interfaces.
+- **Next.js** - React framework for server-side rendering and static site generation.
+- **TypeScript** - Superset of JavaScript that adds static typing.
+- **Tailwind CSS** - Utility-first CSS framework for fast UI development.
+
+### Backend
+
+- **Flask** - JavaScript runtime environment for the backend server.
+
+## Setup Instructions
+
+### Prerequisites
+
+Ensure you have the following is installed on your machine:
+
+- [Node.js](https://nodejs.org/) (which includes npm)
+
+### Clone the Repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/property-rent-purchase.git
+cd property-rent-purchase
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### File Structure
+```bash
+property-rent-purchase/
+├── backend/
+│   ├── models/              # Flask models (Property, Review)
+│   ├── .env                 # Environment variables
+│   └── package.json         # Backend dependencies
+├── frontend/
+│   ├── components/          # React components (PropertyCard, ReviewForm, etc.)
+│   ├── pages/               # Next.js pages (Home, Property Listing, etc.)
+│   ├── styles/              # Tailwind CSS configuration
+│   ├── .env.local           # Environment variables for frontend
+│   ├── next.config.js       # Next.js configuration
+│   └── package.json         # Frontend dependencies
+└── README.md                # This file
+```
+### Contributing
+Contributions are welcome! If you have any improvements or bug fixes, feel free to submit a pull request.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1.Fork the repository
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2.Create a new branch (git checkout -b feature-name)
 
-## Learn More
+3.Make your changes
 
-To learn more about Next.js, take a look at the following resources:
+4.Commit your changes (git commit -m 'Add new feature')
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5.Push your changes (git push origin feature-name)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6.Open a pull request
 
-## Deploy on Vercel
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# real-estate-app
