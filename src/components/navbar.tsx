@@ -51,6 +51,14 @@ const Navbar = () => {
             Buy
             <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
           </Link>
+          <Link href="/postbuy" className="relative text-white font-normal text-xl group">
+            Sell a House
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
+          </Link>
+          <Link href="/postrent" className="relative text-white font-normal text-xl group">
+            Rent a House
+            <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>
+          </Link>
           <Link href="/contact" className="relative text-white font-normal text-xl group">
             Contact Us
             <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-lightPink group-hover:w-full transition-all duration-300"></span>

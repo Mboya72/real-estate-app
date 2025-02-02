@@ -1,4 +1,3 @@
-// pages/postbuy.tsx
 import { useState } from 'react';
 
 const PostBuy = () => {
@@ -8,6 +7,7 @@ const PostBuy = () => {
   const [bedrooms, setBedrooms] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -30,13 +30,28 @@ const PostBuy = () => {
     });
 
     const result = await response.json();
+    
+    if (response.ok) {
+      // Clear the form inputs
+      setName('');
+      setPrice('');
+      setLocation('');
+      setBedrooms('');
+      setDescription('');
+      setImage('');
+    } else {
+      // Show error message if property already exists
+      setError(result.error || 'An error occurred');
+    }
+
     console.log(result);
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-8">
+    <div className="text-darkText bg-gray-100 min-h-screen p-8">
       <h1 className="text-4xl font-bold text-primary mb-8">Post a Buy Property</h1>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg">
+        {error && <div className="text-red-500">{error}</div>}
         <input
           type="text"
           placeholder="Property Name"
@@ -80,7 +95,7 @@ const PostBuy = () => {
         />
         <button
           type="submit"
-          className="w-full py-3 bg-primary text-white font-semibold rounded-md hover:bg-opacity-80"
+          className="text-borderGray w-full py-3 bg-primary text-white font-semibold rounded-md hover:bg-opacity-80"
         >
           Post Property
         </button>

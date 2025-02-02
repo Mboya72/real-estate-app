@@ -2,12 +2,13 @@ from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from config import Config
 from extensions import db, bcrypt, migrate  # Import from extensions.py
-from models import BuyProperty, RentProperty, User, Review  # Import models after db initialization
+from models import BuyProperty, Contact, RentProperty, User, Review  # Import models after db initialization
 
 # Initialize the app
 app = Flask(__name__)
+app.config['SQLALCHEMY_ECHO'] = True
 app.config.from_object(Config)
-CORS(app)
+CORS(app, supports_credentials=True)
 
 # Initialize extensions
 db.init_app(app)
@@ -88,12 +89,9 @@ def get_rent_properties():
     return jsonify(property_list)
 
 
-# Endpoint to add a new buy property (requires authentication via session)
+# Endpoint to add a new buy property
 @app.route("/buy-properties", methods=["POST"])
 def add_buy_property():
-    if "user_id" not in session:
-        return jsonify({"error": "You must be logged in to add a property."}), 403
-
     data = request.get_json()
     name = data.get("name")
     price = data.get("price")
@@ -120,12 +118,9 @@ def add_buy_property():
     return jsonify(new_property.serialize()), 201
 
 
-# Endpoint to add a new rent property (requires authentication via session)
+# Endpoint to add a new rent property (no authentication required)
 @app.route("/rent-properties", methods=["POST"])
 def add_rent_property():
-    if "user_id" not in session:
-        return jsonify({"error": "You must be logged in to add a property."}), 403
-
     data = request.get_json()
     name = data.get("name")
     price = data.get("price")
@@ -151,11 +146,11 @@ def add_rent_property():
 
     return jsonify(new_property.serialize()), 201
 
-
-# Endpoint to submit a review for a property@app.route('/submit-review', methods=['POST'])
+# Endpoint to submit a review for a property
+@app.route('/submit-review', methods=['POST'])
 def submit_review():
     data = request.get_json()
-    
+
     # Debugging: print the incoming data
     print(f"Received data: {data}")
 
@@ -180,7 +175,7 @@ def submit_review():
     # If neither property is found, return an error
     if not buy_property and not rent_property:
         return jsonify({'success': False, 'message': 'Property not found'}), 404
-    
+
     # Create the review
     review = Review(
         rating=rating,
@@ -195,3 +190,56 @@ def submit_review():
     db.session.commit()
 
     return jsonify({'success': True, 'message': 'Review submitted successfully!'}), 200
+
+# Endpoint to delete a buy property
+@app.route("/buy-properties/<int:id>", methods=["DELETE"])
+def delete_buy_property(id):
+    property = BuyProperty.query.get(id)
+    if not property:
+        return jsonify({"error": "Property not found."}), 404
+
+    db.session.delete(property)
+    db.session.commit()
+
+    return jsonify({"message": "Property deleted successfully!"}), 200
+
+# Endpoint to delete a rent property
+@app.route("/rent-properties/<int:id>", methods=["DELETE"])
+def delete_rent_property(id):
+    property = RentProperty.query.get(id)
+    if not property:
+        return jsonify({"error": "Property not found."}), 404
+
+    db.session.delete(property)
+    db.session.commit()
+
+    return jsonify({"message": "Property deleted successfully!"}), 200
+
+@app.route("/api/contact", methods=["POST"])
+def contact():
+    # Get the contact form data from the request body
+    data = request.get_json()
+
+    # Extract the data
+    name = data.get("name")
+    email = data.get("email")
+    message = data.get("message")
+
+    # Validate input
+    if not name or not email or not message:
+        return jsonify({"error": "All fields are required."}), 400
+
+    # Create a new Contact entry
+    contact_submission = Contact(name=name, email=email, message=message)
+
+    try:
+        # Add the new contact to the session and commit the transaction
+        db.session.add(contact_submission)
+        db.session.commit()  # This ensures data is saved to the database
+        return jsonify({"message": "Thank you for reaching out! We will get back to you shortly."}), 200
+    except Exception as e:
+        db.session.rollback()  # Rollback in case of an error
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+if __name__ == "__main__":
+    app.run(debug=True)

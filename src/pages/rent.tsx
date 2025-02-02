@@ -52,6 +52,23 @@ const Rent = () => {
       });
   };
 
+  const handleDelete = (propertyId: number) => {
+    fetch(`http://localhost:5000/rent-properties/${propertyId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Property deleted successfully!') {
+          setProperties((prevProperties) =>
+            prevProperties.filter((property) => property.id !== propertyId)
+          );
+          alert('Property deleted successfully!');
+        } else {
+          alert('Failed to delete property.');
+        }
+      });
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <h1 className="text-4xl font-bold text-primary mb-8">Rent Properties</h1>
@@ -108,6 +125,14 @@ const Rent = () => {
                 Submit Review
               </button>
             </div>
+
+            {/* Delete Button */}
+            <button
+              onClick={() => handleDelete(property.id)}
+              className="mt-4 bg-primary hover:bg-accent text-borderGray px-4 py-2 rounded-md"
+            >
+              Delete Property
+            </button>
           </div>
         ))}
       </div>
@@ -116,4 +141,3 @@ const Rent = () => {
 };
 
 export default Rent;
-

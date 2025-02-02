@@ -1,19 +1,44 @@
-// pages/buy.tsx
 import { useEffect, useState } from 'react';
 
 const Buy = () => {
   const [properties, setProperties] = useState<any[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('http://localhost:5000/buy-properties')
       .then((response) => response.json())
-      .then((data) => setProperties(data));
+      .then((data) => setProperties(data))
+      .catch((err) => setError('Failed to fetch properties.'));
   }, []);
 
+  const deleteProperty = async (id: number) => {
+    try {
+      const response = await fetch(`http://localhost:5000/buy-properties`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        const result = await response.json();
+        setError(result.error || 'Failed to delete property');
+        return;
+      }
+  
+      // If deletion is successful, filter out the deleted property
+      setProperties(properties.filter((property) => property.id !== id));
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      setError('Failed to delete property.');
+    }
+  };
+  
   return (
     <div className="bg-gray-100 min-h-screen p-8">
       <h1 className="text-4xl font-bold text-primary mb-8">Buy Properties</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {error && <p className="text-red-500">{error}</p>}
+      <div className="text-darkText grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {properties.map((property: any) => (
           <div key={property.id} className="bg-white p-6 rounded-lg shadow-lg">
             <img
@@ -27,7 +52,6 @@ const Buy = () => {
 
             {/* Review section */}
             <h4 className="text-lg font-semibold mt-4">Reviews</h4>
-            {/* Ensure reviews is an array before checking length */}
             {Array.isArray(property.reviews) && property.reviews.length > 0 ? (
               <ul className="space-y-2 mt-2">
                 {property.reviews.map((review: any, index: number) => (
@@ -40,6 +64,14 @@ const Buy = () => {
             ) : (
               <p>No reviews yet.</p>
             )}
+
+            {/* Delete Button */}
+            <button
+              onClick={() => deleteProperty(property.id)}
+              className="mt-4 text-white bg-primary hover:bg-accent py-2 px-4 rounded-md"
+            >
+              Delete Property
+            </button>
           </div>
         ))}
       </div>
