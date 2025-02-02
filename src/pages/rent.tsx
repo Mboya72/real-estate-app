@@ -1,7 +1,22 @@
 import { useEffect, useState } from 'react';
 
+interface Review {
+  user: string;
+  comment: string;
+  rating: number;
+}
+
+interface Property {
+  id: number;
+  name: string;
+  price: number;
+  location: string;
+  image: string;
+  reviews: Review[];
+}
+
 const Rent = () => {
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [reviews, setReviews] = useState<{ [key: number]: string }>({}); // Store reviews by property id
   const [ratings, setRatings] = useState<{ [key: number]: number }>({}); // Store ratings by property id
   const [userEmail] = useState<string>(''); // Assuming user email is stored
@@ -9,7 +24,7 @@ const Rent = () => {
   useEffect(() => {
     fetch('http://localhost:5000/rent-properties')
       .then((response) => response.json())
-      .then((data) => setProperties(data));
+      .then((data: Property[]) => setProperties(data));
   }, []);
 
   const handleReviewChange = (propertyId: number, reviewText: string) => {
@@ -73,7 +88,7 @@ const Rent = () => {
     <div className="bg-gray-100 min-h-screen p-8">
       <h1 className="text-4xl font-bold text-primary mb-8">Rent Properties</h1>
       <div className="text-darkText grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-        {properties.map((property: any) => (
+        {properties.map((property) => (
           <div key={property.id} className="bg-white p-6 rounded-lg shadow-lg">
             <img
               src={property.image}
@@ -88,7 +103,7 @@ const Rent = () => {
             <h4 className="text-darkText text-lg font-semibold mt-4">Reviews</h4>
             {Array.isArray(property.reviews) && property.reviews.length > 0 ? (
               <ul className="text-darkText space-y-2 mt-2">
-                {property.reviews.map((review: any, index: number) => (
+                {property.reviews.map((review, index) => (
                   <li key={index} className="text-darkText border-b pb-2">
                     <p className="text-darkText"><strong>{review.user}:</strong> {review.comment}</p>
                     <p className="text-darkText">Rating: {review.rating}/5</p>

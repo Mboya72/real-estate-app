@@ -44,7 +44,9 @@ const Contact: React.FC = () => {
       } else {
         setError(data.error || "Something went wrong. Please try again later.");
       }
-    } catch (err) {
+    } catch (error) {
+      // You can log the error for debugging purposes
+      console.error(error); // Log the error if needed
       setError("An unexpected error occurred.");
     }
   };

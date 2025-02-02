@@ -9,7 +9,7 @@ const PostBuy = () => {
   const [image, setImage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const data = {
